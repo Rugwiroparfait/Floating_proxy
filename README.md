@@ -72,4 +72,4 @@ Then execute it:
 This script is released under the MIT License.
 
 ---
-Author:NSANZIMANA RUGWIRO Dominique Parfait
+Author: NSANZIMANA RUGWIRO Dominique Parfait
