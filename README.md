@@ -1,6 +1,6 @@
 # 🛡️ Proxy Configuration Script
 
-![Main Image](https://www.fortinet.com/resources/cyberglossary/proxy-server)
+
 
 This Bash script simplifies the process of configuring system-wide proxy settings across various applications and services on Linux. It supports setting and unsetting proxies for tools like APT, Docker, Snap Store, PlayOnLinux, and more, ensuring seamless connectivity in restricted network environments.
 
