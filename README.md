@@ -1,7 +1,3 @@
-Here's an artistic and attractive README for your proxy configuration script:
-
----
-
 # 🛡️ Proxy Configuration Script
 
 This Bash script simplifies the process of configuring system-wide proxy settings across various applications and services on Linux. It supports setting and unsetting proxies for tools like APT, Docker, Snap Store, PlayOnLinux, and more, ensuring seamless connectivity in restricted network environments.
