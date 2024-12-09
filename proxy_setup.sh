@@ -1,5 +1,27 @@
 #!/bin/bash
 
+# Function to display ASCII art
+display_ascii_art() {
+    echo "  _____                          _____      _              "
+    echo " |  __ \                        |  __ \    (_)             "
+    echo " | |__)|__ _ _ __   ___ _ __    | |__) |___ _ _ __   __ _  "
+    echo " |  ___/ _ \ '_ \ / _ \ '__|    |  _  // _ \ | '_ \ / _\` | "
+    echo " | |  |  __/ |_) |  __/ |       | | \ \  __/ | | | | (_| | "
+    echo " |_|   \___| .__/ \___|_|       |_|  \_\___|_|_| |_|\__, | "
+    echo "           | |                                      __/ | "
+    echo "           |_|                                     |___/  "
+    echo ""
+    echo "          System-wide Proxy Setup Script"
+    echo "               Developed by Rugwiro Parfait"
+    echo ""
+    echo "         Email: rugwiroparfait003@gmail.com"
+    echo "         GitHub: github.com/RugwiroParfait"
+    echo ""
+}
+
+# Display the ASCII art
+display_ascii_art
+
 # Log file location
 log_file="/var/log/proxy_setup.log"
 
@@ -101,11 +123,12 @@ set_proxy_system_wide() {
     fi
     log "Python system-wide environment variables configured."
 
-    # Configure npm proxy settings
-    npm_config_file="/etc/npmrc"
-    echo "proxy=http://$proxy_address:$proxy_port" | sudo tee "$npm_config_file"
-    echo "https-proxy=http://$proxy_address:$proxy_port" | sudo tee -a "$npm_config_file"
-    log "npm proxy settings configured."
+    # Configure npm proxy settings using npm config
+    log "Configuring npm proxy settings"
+    npm config set proxy "http://$proxy_address:$proxy_port"
+    npm config set https-proxy "http://$proxy_address:$proxy_port"
+    npm config set strict-ssl false
+    log "npm proxy settings configured"
 
     # Configure GitHub proxy settings
     git config --global http.proxy "http://$proxy_address:$proxy_port"
@@ -196,47 +219,45 @@ unset_proxy_system_wide() {
     fi
     log "wget proxy settings removed."
 
-    # Unset Python proxy settings
+    # Unset Python packages proxy
     pip_config_file="/etc/pip.conf"
     if [ -f "$pip_config_file" ]; then
         sudo rm "$pip_config_file"
     fi
     log "Python proxy settings removed."
 
-    # Unset npm proxy settings
-    npm_config_file="/etc/npmrc"
-    if [ -f "$npm_config_file" ]; then
-        sudo rm "$npm_config_file"
-    fi
+    # Remove npm proxy settings
+    npm config delete proxy
+    npm config delete https-proxy
     log "npm proxy settings removed."
 
-    # Unset GitHub proxy settings
+    # Remove GitHub proxy settings
     git config --global --unset http.proxy
     git config --global --unset https.proxy
     log "GitHub proxy settings removed."
 
-    # Unset VSCode proxy settings
+    # Remove VSCode proxy settings
     vscode_settings_file="$HOME/.config/Code/User/settings.json"
     if [ -f "$vscode_settings_file" ]; then
         sudo jq 'del(.["http.proxy", "https.proxy"])' "$vscode_settings_file" | sudo tee "$vscode_settings_file" > /dev/null
     fi
     log "VSCode proxy settings removed."
 
-    # Remove ping command alias
+    # Remove ping alias
     sudo sed -i '/alias ping/d' /etc/bash.bashrc
     source /etc/bash.bashrc
-    log "ping command alias removed."
+    log "ping alias removed."
 
-    log "System-wide proxy settings have been removed."
+    log "All system-wide proxy settings have been removed."
 }
 
-# Main script execution
+# Main script logic
 echo "Choose an option:"
-echo "1) Set system-wide proxy"
-echo "2) Unset system-wide proxy"
-read -r choice
+echo "1. Set system-wide proxy"
+echo "2. Unset system-wide proxy"
+read -r option
 
-case $choice in
+case $option in
     1)
         set_proxy_system_wide
         ;;
@@ -244,7 +265,7 @@ case $choice in
         unset_proxy_system_wide
         ;;
     *)
-        log "Invalid option selected. Exiting."
+        echo "Invalid option."
         exit 1
         ;;
 esac
